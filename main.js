@@ -3,6 +3,7 @@ const listaNomi = document.getElementById("listaNomi");
 const comandoTx = document.getElementById("input-comando");
 const testo = document.getElementById("testo");
 const separatore = document.getElementById("separatore");
+const body = document.getElementById("body");
 
 var persone = [];
 var struttura = [];
@@ -35,7 +36,6 @@ inputNome.addEventListener("keydown", function (event) { // input per l'elenco d
             
                 default:
                     persone.push([nome, numeroPersone + i]); // immagazina la persona nell'array
-                    //listaNomi.innerHTML += `<li class="p${numeroPersone + i}" onmouseover="evidenzia(event);" onmouseleave="deevidenzia(event);" onclick="finestraMenu(event);">${nome}</li>`; // aggiungi il nome alla lista
                     aggiorna();
                     break;
 
@@ -99,7 +99,6 @@ comandoTx.addEventListener("keydown", function (event) { // input per i comandi 
                     storia.push(testo.innerText); // memorizzo stato in caso volessi tornare indietro
 
                     let seed = 0;
-                    randomizza(); // randomizzo la lista
 
                     for (let i = 0; i < testo.innerText.length; i++) {
 
@@ -112,14 +111,21 @@ comandoTx.addEventListener("keydown", function (event) { // input per i comandi 
                             }
 
                             let tmp = "";
-                            for (let i = 0; i < parseInt(numero); i++, seed++) {// creo una stringa 'tmp' che contiene i nomi randomizzati
-                                if (seed === persone.length) {
-                                    randomizza();
+                            let personeDaInserire = [];
+
+                            for (let j = 0; j < parseInt(numero); j++, seed++) { // creo l'array con le persone da inserire in quel gruppo
+                                if (seed === persone.length) 
                                     seed = 0;
-                                }
-                                tmp += `<span class="p${persone[seed][1]}">${persone[seed][0]}</span> - `;
+                                personeDaInserire.push(persone[seed]);
                             }
-                            tmp = tmp.slice(0, -3);
+
+                            randomizza(personeDaInserire);
+
+                            personeDaInserire.forEach(persona => { // creo una stringa 'tmp' che contiene i nomi randomizzati
+                                tmp += `<span class="p${persona[1]}">${persona[0]}</span> - `;
+                            });
+
+                            tmp = tmp.slice(0, -3); // togli ' - '
                             console.log(tmp);
                             testo.innerHTML = testo.innerHTML.replace(`.${numero}`, tmp); // rimpiazza il numero con tmp
 
@@ -183,8 +189,10 @@ function deevidenzia(e) {
 
 }
 
-function randomizza() {
-    persone = persone.sort(() => Math.random() - 0.5);
+function randomizza(array) {
+
+    array = array.sort(() => Math.random() - 0.5);
+
 }
 
 // questa l'ho presa da "https://techoverflow.net/2018/03/30/copying-strings-to-the-clipboard-using-pure-javascript/"
@@ -274,7 +282,7 @@ lunedì:
 
 
 
-const body = document.getElementById("body");
+// LOGICA PER IL RESIZING
 
 var tocco = false;
 
